@@ -2,7 +2,7 @@
 
 An non-official Docker image for Ant Media Server Community Edition.
 
-The image is built on my self hosted Concourse instance. You can checkout the build pipeline [here](https://github.com/boris1993/concourse-pipelines/ant-media-server/pipeline.yaml).
+The image is built on my self hosted Concourse instance. You can checkout the build pipeline [here](https://github.com/boris1993/concourse-pipelines/blob/master/ant-media-server/pipeline.yaml).
 
 ## Usage
 
