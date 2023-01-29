@@ -1,0 +1,95 @@
+---
+resource_types:
+  - name: http-resource
+    type: docker-image
+    source:
+      repository: jgriff/http-resource
+
+resources:
+- name: ant-media-server
+  type: github-release
+  source:
+    owner: ant-media
+    repository: Ant-Media-Server
+    tag_filter: "ams-v?([^v].*)"
+- name: ant-media-server-dockerfile
+  type: http-resource
+  source:
+    url: https://raw.githubusercontent.com/ant-media/Scripts/master/docker/Dockerfile_Process
+- name: ant-media-server-docker
+  type: registry-image
+  icon: docker
+  source:
+    repository: "((dockerhub_username))/ant-media-server"
+    username: "((dockerhub_username))"
+    password: "((dockerhub_token))"
+
+jobs:
+- name: build-image
+  public: true
+  build_log_retention:
+    builds: 5
+  plan:
+  - in_parallel:
+    - get: ant-media-server
+      trigger: true
+    - get: ant-media-server-dockerfile
+  - load_var: tag
+    file: ant-media-server/version
+    format: trim
+    reveal: true
+  - task: move-dockerfile
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: 
+          repository: ubuntu
+      inputs: 
+      - name: ant-media-server
+      - name: ant-media-server-dockerfile
+      outputs:
+      - name: ant-media-server
+      run: 
+        path: mv
+        args: ["ant-media-server-dockerfile/body", "ant-media-server/Dockerfile"]
+  - task: generate-build-args
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: 
+          repository: ubuntu
+      inputs: 
+      - name: ant-media-server
+      outputs:
+      - name: ant-media-server
+      run: 
+        path: sh
+        args: 
+          - -exc
+          - 'echo "AntMediaServer=ant-media-server-community-$(cat ant-media-server/version).zip" > ant-media-server/build_args.txt'
+  - task: build-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source: 
+          repository: concourse/oci-build-task
+      inputs:
+      - name: ant-media-server
+      outputs:
+      - name: image
+      params:
+        CONTEXT: ant-media-server
+        BUILD_ARGS_FILE: ant-media-server/build_args.txt
+      caches:
+      - path: cache
+      run:
+        path: build
+  - put: ant-media-server-docker
+    params:
+      image: image/image.tar
+      bump_aliases: true
+      version: "((.:tag))"
