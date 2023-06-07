@@ -1,0 +1,53 @@
+---
+resources:
+- name: boinc-official-docker-image-arm64
+  type: registry-image
+  icon: docker
+  source:
+    repository: boinc/client
+    tag: arm64v8
+- name: boinc-dockerfile
+  type: git
+  uri: https://github.com/boris1993/concourse-pipelines.git
+- name: my-boinc-image
+  type: registry-image
+  icon: docker
+  source: 
+    repository: "((dockerhub_username))/boinc"
+    username: "((dockerhub_username))"
+    password: "((dockerhub_token))"
+
+jobs:
+- name: build-image-arm64
+  public: true
+  build_log_retention:
+    builds: 5
+  plan:
+  - in_parallel:
+    - get: boinc-official-docker-image
+      trigger: true
+    - get: boinc-dockerfile
+  - task: build-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source: 
+          repository: concourse/oci-build-task
+      inputs:
+      - name: boinc-dockerfile
+      outputs:
+      - name: arm64-image
+      params:
+        DOCKERFILE: boinc-dockerfile/boinc/Dockerfile
+        IMAGE_PLATFORM: linux/arm64
+      caches:
+      - path: cache
+      run:
+        path: build
+  - put: my-boinc-image
+    params:
+      image: image/image.tar
+      bump_aliases: true
+      version: "((.:tag))"
