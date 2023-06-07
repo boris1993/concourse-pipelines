@@ -1,12 +1,16 @@
 ---
 resources:
-- name: boinc-official-docker-image-arm64
-  type: registry-image
-  icon: docker
+- name: boinc-client-official-repo
+  type: git
+  icon: github
   source:
-    repository: boinc/client
-    tag: arm64v8
-- name: boinc-dockerfile
+    uri: https://github.com/BOINC/boinc.git
+- name: boinc-official-docker
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/BOINC/boinc-client-docker.git
+- name: customized-dockerfile
   type: git
   icon: github
   source:
@@ -26,9 +30,12 @@ jobs:
     builds: 5
   plan:
   - in_parallel:
-    - get: boinc-official-docker-image-arm64
+    - get: boinc-client-official-repo
       trigger: true
-    - get: boinc-dockerfile
+    - get: boinc-official-docker
+      trigger: true
+    - get: customized-dockerfile
+      trigger: true
   - task: build-image
     privileged: true
     config:
@@ -38,7 +45,8 @@ jobs:
         source: 
           repository: concourse/oci-build-task
       inputs:
-      - name: boinc-dockerfile
+      - name: boinc-official-docker
+      - name: customized-dockerfile
       outputs:
       - name: arm64-image
       params:
@@ -52,4 +60,4 @@ jobs:
     params:
       image: image/image.tar
       bump_aliases: true
-      version: "((.:tag))"
+      version: "latest"

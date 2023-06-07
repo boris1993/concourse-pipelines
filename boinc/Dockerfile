@@ -1,6 +1,25 @@
-FROM boinc/client:arm64v8
+FROM arm64v8/ubuntu:latest
+
+LABEL maintainer="boris1993" \
+      description="A lightweight BOINC client on ARMv8 64-bit architecture. Installed additional packages for supporting SiDock@Home."
+
+ENV BOINC_GUI_RPC_PASSWORD="123" \
+    BOINC_REMOTE_HOST="127.0.0.1" \
+    BOINC_CMD_LINE_OPTIONS="" \
+	DEBIAN_FRONTEND=noninteractive
+
+COPY ../../boinc-official-docker/bin/ /usr/bin/
+
+WORKDIR /var/lib/boinc
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libgomp1
+ && apt-get install -y --no-install-recommends \
+	tzdata \
+    libgomp1 \
+    boinc-client \
+ && apt-get autoremove -y \
+ && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 31416
 
 CMD ["start-boinc.sh"]
