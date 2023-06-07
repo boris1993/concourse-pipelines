@@ -8,6 +8,7 @@ resources:
     tag: arm64v8
 - name: boinc-dockerfile
   type: git
+  icon: github
   source:
     uri: https://github.com/boris1993/concourse-pipelines.git
 - name: my-boinc-image
