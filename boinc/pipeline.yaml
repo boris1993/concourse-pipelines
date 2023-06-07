@@ -35,7 +35,6 @@ jobs:
     - get: boinc-official-docker
       trigger: true
     - get: customized-dockerfile
-      trigger: true
   - task: build-image
     privileged: true
     config:
