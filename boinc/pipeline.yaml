@@ -10,7 +10,7 @@ resources:
   icon: github
   source:
     uri: https://github.com/BOINC/boinc-client-docker.git
-- name: customized-dockerfile
+- name: pipeline-repo
   type: git
   icon: github
   source:
@@ -34,7 +34,7 @@ jobs:
       trigger: true
     - get: boinc-official-docker
       trigger: true
-    - get: customized-dockerfile
+    - get: pipeline-repo
   - task: build-image
     privileged: true
     config:
@@ -45,11 +45,11 @@ jobs:
           repository: concourse/oci-build-task
       inputs:
       - name: boinc-official-docker
-      - name: customized-dockerfile
+      - name: pipeline-repo
       outputs:
       - name: arm64-image
       params:
-        DOCKERFILE: boinc-dockerfile/boinc/Dockerfile
+        DOCKERFILE: pipeline-repo/boinc/Dockerfile
         IMAGE_PLATFORM: linux/arm64
       caches:
       - path: cache
