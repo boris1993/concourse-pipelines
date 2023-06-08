@@ -13,10 +13,8 @@ COPY ../../boinc-official-docker/bin/ /usr/bin/
 WORKDIR /var/lib/boinc
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-	tzdata \
-    libgomp1 \
-    boinc-client \
+ && apt-get upgrade \
+ && apt-get install -y --no-install-recommends tzdata libgomp1 boinc-client \
  && apt-get autoremove -y \
  && rm -rf /var/lib/apt/lists/*
 
