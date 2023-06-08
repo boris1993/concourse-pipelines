@@ -1,12 +1,10 @@
 ---
 resources:
-- name: boinc-client-official-release
-  type: github-release
+- name: boinc-client-official-repo
+  type: git
   icon: github
   source:
-    owner: BOINC
-    repository: boinc
-    tag_filter: "client_release\\/.+"
+    uri: https://github.com/BOINC/boinc.git
 - name: boinc-official-docker
   type: git
   icon: github
@@ -32,15 +30,11 @@ jobs:
     builds: 5
   plan:
   - in_parallel:
-    - get: boinc-client-official-release
+    - get: boinc-client-official-repo
       trigger: true
     - get: boinc-official-docker
       trigger: true
     - get: pipeline-repo
-  - load_var: tag
-    file: boinc-client-official-repo
-    format: trim
-    reveal: true
   - task: build-image
     privileged: true
     config:
@@ -65,4 +59,3 @@ jobs:
     params:
       image: image/image.tar
       bump_aliases: true
-      version: "((.:tag))"
