@@ -60,41 +60,6 @@ jobs:
     params:
       image: image/image.tar
       bump_aliases: true
-- name: build-image-arm32v7
-  public: true
-  build_log_retention:
-    builds: 5
-  plan:
-  - in_parallel:
-    - get: boinc-client-official-repo
-      trigger: true
-    - get: boinc-official-docker
-      trigger: true
-    - get: pipeline-repo
-  - task: build-image
-    privileged: true
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source: 
-          repository: concourse/oci-build-task
-      inputs:
-      - name: boinc-official-docker
-      - name: pipeline-repo
-      outputs:
-      - name: image
-      params:
-        DOCKERFILE: pipeline-repo/boinc/Dockerfile-arm32v7
-        IMAGE_PLATFORM: linux/arm32v7
-      caches:
-      - path: cache
-      run:
-        path: build
-  - put: my-boinc-image
-    params:
-      image: image/image.tar
-      bump_aliases: true
 - name: build-image-amd64
   public: true
   build_log_retention:
