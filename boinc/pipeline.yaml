@@ -22,6 +22,7 @@ resources:
     repository: "((dockerhub_username))/boinc"
     username: "((dockerhub_username))"
     password: "((dockerhub_token))"
+    tag: "latest"
 
 jobs:
 - name: build-image-arm64
@@ -47,7 +48,7 @@ jobs:
       - name: boinc-official-docker
       - name: pipeline-repo
       outputs:
-      - name: arm64-image
+      - name: image
       params:
         DOCKERFILE: pipeline-repo/boinc/Dockerfile
         IMAGE_PLATFORM: linux/arm64
