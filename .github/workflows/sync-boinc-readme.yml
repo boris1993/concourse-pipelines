@@ -1,10 +1,10 @@
-name: Update the README of Ant Media Server in Docker Hub
+name: Update the README of BOINC in Docker Hub
 
 on:
   workflow_dispatch:
   push:
     branches: [ master ]
-    paths: [ "ant-media-server/README.md", ".github/workflows/sync-ams-readme.yml" ]
+    paths: [ "boinc/README.md", ".github/workflows/sync-boinc-readme.yml" ]
 
 jobs:
   build:
@@ -21,6 +21,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-          repository: boris1993/ant-media-server
-          short-description: "Self built Ant Media Server Docker image"
-          readme-filepath: ant-media-server/README.md
+          repository: boris1993/boinc
+          short-description: "Self built BOINC client Docker image"
+          readme-filepath: boinc/README.md
