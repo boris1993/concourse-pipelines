@@ -50,7 +50,7 @@ jobs:
       outputs:
       - name: image
       params:
-        DOCKERFILE: pipeline-repo/boinc/Dockerfile
+        DOCKERFILE: pipeline-repo/boinc/Dockerfile-arm64
         IMAGE_PLATFORM: linux/arm64
       caches:
       - path: cache
