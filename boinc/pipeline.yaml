@@ -52,6 +52,7 @@ jobs:
       params:
         DOCKERFILE: pipeline-repo/boinc/Dockerfile
         IMAGE_PLATFORM: linux/arm64,linux/amd64
+        OUTPUT_OCI: true
       caches:
       - path: cache
       run:
