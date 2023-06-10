@@ -1,4 +1,4 @@
-FROM arm64v8/ubuntu:latest
+FROM ubuntu:latest
 
 LABEL maintainer="boris1993" \
       description="A lightweight BOINC client on ARMv8 64-bit architecture. Installed additional packages for supporting SiDock@Home."
